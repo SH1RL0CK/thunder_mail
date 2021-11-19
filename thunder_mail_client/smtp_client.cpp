@@ -1,18 +1,18 @@
-#include "smpt_client.h"
+#include "smtp_client.h"
 
-SmptClient::SmptClient(QObject *parent) : QObject(parent)
+SmtpClient::SmtpClient(QObject *parent) : QObject(parent)
 {
     tcpSocket = new QTcpSocket(this);
 }
 
-void SmptClient::connectToServer(QString ipAdress, int port)
+void SmtpClient::connectToServer(QString ipAdress, int port)
 {
     tcpSocket->connectToHost(ipAdress, port);
-    QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmptClient::receiveText);
+    QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmtpClient::receiveText);
     qDebug() << "connected to server";
 }
 
-void SmptClient::receiveText()
+void SmtpClient::receiveText()
 {
     if(tcpSocket->bytesAvailable())
     {
@@ -22,13 +22,13 @@ void SmptClient::receiveText()
     }
 }
 
-void SmptClient::sendText(QString text)
+void SmtpClient::sendText(QString text)
 {
     tcpSocket->write(text.toLatin1());
     qDebug() << "send: " << text;
 }
 
-void SmptClient::handleReceivedText(QString receivedText)
+void SmtpClient::handleReceivedText(QString receivedText)
 {
     qDebug() << "handle: " << receivedText;
 }

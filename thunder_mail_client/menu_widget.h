@@ -2,7 +2,7 @@
 #define MENUWIDGET_H
 
 #include <QWidget>
-#include "smpt_client.h"
+#include "smtp_client.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MenuWidget; }
@@ -22,6 +22,6 @@ public:
 private:
     Ui::MenuWidget *ui;
 
-    SmptClient *smptClient;
+    SmtpClient *smtpClient;
 };
 #endif // MENUWIDGET_H

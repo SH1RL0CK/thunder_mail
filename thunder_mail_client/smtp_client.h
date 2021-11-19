@@ -5,13 +5,22 @@
 #include <QTcpSocket>
 
 /**
+ * @brief Die verschiedene Stati, in den sich der SMPT Client gerade befinden kann
+ */
+enum SmtpClientState
+{
+    ConnectedToServer,
+    Smtp
+};
+
+/**
  * @brief Diese Klasse ist für den SMPT Client zuständig
  */
-class SmptClient : public QObject
+class SmtpClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit SmptClient(QObject *parent = nullptr);
+    explicit SmtpClient(QObject *parent = nullptr);
 
     /**
      * @brief Der SMPT Client verbindet sich mit dem SMPT Server

@@ -1,6 +1,7 @@
 #ifndef ADMINISTRATIONWIDGET_H
 #define ADMINISTRATIONWIDGET_H
 
+#include "smtp_server.h"
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -17,5 +18,6 @@ public:
 
 private:
     Ui::AdministrationWidget *ui;
+    SmtpServer *smtpServer = new SmtpServer;
 };
 #endif // ADMINISTRATIONWIDGET_H

@@ -10,10 +10,12 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    administration_widget.cpp
+    administration_widget.cpp \
+    smtp_server.cpp
 
 HEADERS += \
-    administration_widget.h
+    administration_widget.h \
+    smtp_server.h
 
 FORMS += \
     administration_widget.ui

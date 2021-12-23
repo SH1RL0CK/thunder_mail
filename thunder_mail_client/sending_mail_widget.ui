@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>718</width>
-    <height>473</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>420</y>
+     <y>440</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -41,7 +41,7 @@
      <x>20</x>
      <y>10</y>
      <width>671</width>
-     <height>401</height>
+     <height>421</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -81,7 +81,7 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="recipientsLineEdit">
         <property name="toolTip">
-         <string>Mehrere Empfänger mit &quot;,&quot; trennen: user@thundermail.com,user2@thundermail.com,...</string>
+         <string>Hinweis: Mehrere Empfänger mit &quot;,&quot; trennen z.B. alice@thundermail.de,bob@thundermail.de,...</string>
         </property>
        </widget>
       </item>
@@ -99,6 +99,13 @@
     </item>
     <item>
      <widget class="QPlainTextEdit" name="bodyPlainTextEdit"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="feedbackOutput">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

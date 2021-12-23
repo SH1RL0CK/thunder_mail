@@ -6,6 +6,8 @@ MenuWidget::MenuWidget(QWidget *parent)
     , ui(new Ui::MenuWidget)
 {
     ui->setupUi(this);
+    smtpClient = new SmtpClient(this);
+    smtpClient->connectToServer("localhost", 4711);
 }
 
 MenuWidget::~MenuWidget()

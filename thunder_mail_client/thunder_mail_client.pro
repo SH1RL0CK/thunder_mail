@@ -10,10 +10,12 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    menu_widget.cpp
+    menu_widget.cpp \
+    smtp_client.cpp
 
 HEADERS += \
-    menu_widget.h
+    menu_widget.h \
+    smtp_client.h
 
 FORMS += \
     menu_widget.ui

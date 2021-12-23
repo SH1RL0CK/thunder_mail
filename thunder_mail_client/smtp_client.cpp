@@ -7,21 +7,51 @@ SmtpClient::SmtpClient(QObject *parent)
     , currentMail(nullptr)
 {}
 
-void SmtpClient::connectToServer(QString ipAdress, int port)
+QString SmtpClient::getLastestError()
 {
-    tcpSocket->connectToHost(ipAdress, port);
-    QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmtpClient::receiveText);
-    state = SmtpClientState::ConnectedToServer;
+    return lastestError;
 }
 
-void SmtpClient::sendMail(QString sender, QString recipient, QString subject, QString body)
+void SmtpClient::connectToServer(QString ipAdress, unsigned int port)
 {
-    currentMail = new Mail;
-    currentMail->sender = "<" + sender + ">";
-    currentMail->recipient = "<" + recipient + ">";
-    currentMail->subject = subject;
-    currentMail->body = body;
+    tcpSocket->connectToHost(ipAdress, port);
+    state = SmtpClientState::ConnectedToServer;
+    QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmtpClient::receiveText);
+}
+
+void SmtpClient::sendMail(QString sender, QStringList recipients, QString subject, QString body)
+{
+    generateNewMail(sender, recipients, subject, body);
+    // Der Mailabsender wird an den Server geschickt und die Übertragung einer neuen Mail eingeleitet.
     sendText("MAIL FROM:" + currentMail->sender);
+    state = SmtpClientState::StartedSendingNewMail;
+}
+
+void SmtpClient::sendQuitRequest()
+{
+    if(state != SmtpClientState::NotConnected)
+    {
+        sendText("QUIT");
+        state = SmtpClientState::SendedQuitRequest;
+    }
+}
+
+void SmtpClient::sendNoOperationCommand()
+{
+    if(state != SmtpClientState::NotConnected && state != SmtpClientState::ConnectedToServer)
+    {
+        sendText("NOOP");
+        state = SmtpClientState::SendedNoOperationCommand;
+    }
+}
+
+void SmtpClient::sendResetRequest()
+{
+    if(state != SmtpClientState::NotConnected && state != SmtpClientState::ConnectedToServer)
+    {
+        sendText("RSET");
+        state = SmtpClientState::SendedResetRequest;
+    }
 }
 
 void SmtpClient::receiveText()
@@ -34,58 +64,109 @@ void SmtpClient::receiveText()
     }
 }
 
+void SmtpClient::generateNewMail(QString sender, QStringList recipients, QString subject, QString body)
+{
+    currentMail = new Mail;
+    // Absender- und Empfängeradressen werden zwischen "<" und ">" gesetzt.
+    currentMail->sender = "<" + sender + ">";
+    for(int i = 0; i < recipients.size(); i++)
+    {
+        recipients[i] = "<" + recipients[i] + ">";
+    }
+    currentMail->recipients = recipients;
+    currentMail->content = "";
+    // Der Mailheader mit Absender, Empänger, Betreff und aktueller Zeit wird erstellt.
+    currentMail->content  += "From: " + currentMail->sender + "\n";
+    currentMail->content  += "To: " + currentMail->recipients.join(",") + "\n";
+    currentMail->content  += "Subject: " + subject  + "\n";
+    currentMail->content  += "Date: " + QDateTime::currentDateTime().toString("ddd, dd MMM yyyy hh:mm:ss") + "\n";
+    // Dann wird der eigentliche Mailinhalt hinzugefügt.
+    currentMail->content  += body + "\n.";
+}
+
 void SmtpClient::sendText(QString text)
 {
-    tcpSocket->write(text.toLatin1());
-    qDebug() << "send: " << text;
+    if(state != SmtpClientState::NotConnected)
+    {
+        tcpSocket->write(text.toLatin1());
+        qDebug() << "send: " << text;
+    }
 }
 
 void SmtpClient::handleReceivedText(QString receivedText)
 {
     int responseCode = receivedText.split(" ").at(0).toInt();
+    /*
+         Der Client hat sich mit dem Server verbunden und erhält eine Antwort von ihm,
+         darauf hin sendet er eine Anfrage zur Verifizierung am Server.
+    */
     if(responseCode == 220 && state == SmtpClientState::ConnectedToServer)
     {
         QString clientName = QHostInfo::localHostName();
         sendText("HELO " + clientName);
+        state = SmtpClientState::SendedVerifyRequest;
     }
     else if(responseCode == 250)
     {
         switch (state)
         {
+            // Der Client hat eine Antwort auf seine Verifizierungsanfrage erhalten.
             case SmtpClientState::SendedVerifyRequest:
                 state = SmtpClientState::VerifiedAtServer;
+                emit connectedToServerSuccessfully();
                 break;
+            // Der Client hat eine Antwort vom Server auf die Anfrage erhalten, jetzt eine neue Mail zu schicken.
             case SmtpClientState::StartedSendingNewMail:
-                sendText("RCPT TO:" + currentMail->recipient);
-                state = SmtpClientState::SendedMailRecipient;
+                // Der Client schickt nach und nach alle Empänger der Mail.
+                if(currentMail->recipients.size() > 0)
+                {
+                    sendText("RCPT TO:" + currentMail->recipients.first());
+                    currentMail->recipients.removeFirst();
+                }
+                // Sind alle versendet, kündigt er den Mailinhalt zu schicken.
+                else
+                {
+                    sendText("DATA");
+                    state = SmtpClientState::SendedRequestToSendMailContent;
+                }
                 break;
-            case SmtpClientState::SendedMailRecipient:
-                sendText("DATA");
-                state = SmtpClientState::SendedRequestToSendMailContent;
+            // Der Mailinhalt wurde vom Server akzeptiert. Die Mail wurde erfolgreich versand.
+            case SmtpClientState::SendedMailContent:
+                delete currentMail;
+                currentMail = nullptr;
+                state = SmtpClientState::VerifiedAtServer;
+                emit sendingMailWasSucessful();
+                break;
+            // Der Mailversand wurde erfolgreich abgebrochen.
+            case SmtpClientState::SendedResetRequest:
+                delete currentMail;
+                currentMail = nullptr;
+                state = SmtpClientState::VerifiedAtServer;
+                break;
+             // Der Client hat eine Antwort auf den "No Operation"-Befehl erhalten.
+            case SmtpClientState::SendedNoOperationCommand:
+                state = SmtpClientState::VerifiedAtServer;
                 break;
             default:
                 break;
         }
     }
-    else if(responseCode == 354 && state == SendedRequestToSendMailContent)
+    // Der Client schickt den Mailinhalt.
+    else if(responseCode == 354 && state == SmtpClientState::SendedRequestToSendMailContent)
     {
-        QString mailContent = "";
-        mailContent += "From: " + currentMail->sender + "\n";
-        mailContent += "To: " + currentMail->recipient  + "\n";
-        mailContent += "Subject: " + currentMail->subject  + "\n";
-        mailContent += "Date: " + QDateTime::currentDateTime().toString("ddd, dd MMM yyyy hh:mm:ss");
-        mailContent += currentMail->body + "\n.";
-        sendText(mailContent);
+        sendText(currentMail->content);
         state = SmtpClientState::SendedMailContent;
     }
+    // Der Client hat eine Antwort auf den "QUIT"-Befehl erhalten und trennt die Verbindung zum Server.
     else if (responseCode == 221)
     {
-        tcpSocket->close();
+        tcpSocket->disconnectFromHost();
         state = SmtpClientState::NotConnected;
     }
     else
     {
-        qDebug() << "unexpected response!";
+        lastestError = receivedText;
+        emit sendingMaiFailed();
     }
 }
 

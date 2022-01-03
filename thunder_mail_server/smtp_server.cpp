@@ -87,8 +87,8 @@ void SmtpServer::receiveAndHandleText()
         {
             if(currentClient->state == SmtpClientState::SendedAtLeastOneMailRecipient)
             {
-                response = "354 Start mail input";
                 currentClient->state = SmtpClientState::SendedRequestToSendMailContent;
+                response = "354 Start mail input";
             }
             else
                 response = "503 Bad sequence of commands";
@@ -100,6 +100,7 @@ void SmtpServer::receiveAndHandleText()
                 currentClient->state = SmtpClientState::ConnectedAndVerified;
                 delete currentClient->currentMail;
                 currentClient->currentMail = nullptr;
+                response = "250 OK";
             }
             else
                 response = "503 Bad sequence of commands";

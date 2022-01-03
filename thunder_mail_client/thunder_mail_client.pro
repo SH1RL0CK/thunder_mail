@@ -11,14 +11,17 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     menu_widget.cpp \
+    sending_mail_widget.cpp \
     smtp_client.cpp
 
 HEADERS += \
     menu_widget.h \
+    sending_mail_widget.h \
     smtp_client.h
 
 FORMS += \
-    menu_widget.ui
+    menu_widget.ui \
+    sending_mail_widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

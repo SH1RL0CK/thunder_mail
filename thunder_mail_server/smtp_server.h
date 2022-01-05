@@ -5,6 +5,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include "database_manager.h"
+
 /**
  * @brief Struktur zum Speichern der Mail, die gerade an den Server geschickt wird
  */
@@ -46,7 +48,7 @@ class SmtpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit SmtpServer(QObject *parent = nullptr);
+    explicit SmtpServer(DatabaseManager *_databaseManager, QObject *parent = nullptr);
     /**
      * @brief Der Server wird gestartet
      * @param port  Der Port, auf dem der Server läuft
@@ -72,6 +74,8 @@ private:
      * @brief Die mit dem Server verbunden SMTP Clients
      */
     QList<SmtpClient*> clients;
+
+    DatabaseManager *databaseManager;
 
     /**
      * @brief Schickt einen Text einen Client

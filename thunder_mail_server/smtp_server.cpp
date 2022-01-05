@@ -1,8 +1,9 @@
 #include "smtp_server.h"
 
-SmtpServer::SmtpServer(QObject *parent)
+SmtpServer::SmtpServer(DatabaseManager *_databaseManager, QObject *parent)
     : QObject(parent)
     , tcpServer(new QTcpServer)
+    , databaseManager(_databaseManager)
 {}
 
 void SmtpServer::startServer(unsigned int port)
@@ -39,7 +40,9 @@ void SmtpServer::receiveAndHandleText()
             if(receivedText.endsWith("\n."))
             {
                 response = "250 OK";
-                currentClient->currentMail->content = receivedText.left(3);
+                receivedText.chop(2);
+                currentClient->currentMail->content = receivedText;
+                databaseManager->storeMail(currentClient->currentMail->recipients, currentClient->currentMail->content);
                 currentClient->state = SmtpClientState::ConnectedAndVerified;
             }
             else

@@ -18,6 +18,7 @@ public:
 
 private:
     Ui::AdministrationWidget *ui;
-    SmtpServer *smtpServer = new SmtpServer;
+    DatabaseManager *databaseManager;
+    SmtpServer *smtpServer;
 };
 #endif // ADMINISTRATIONWIDGET_H

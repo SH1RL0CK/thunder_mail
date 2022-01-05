@@ -41,11 +41,11 @@ public:
     bool userExists(QString username);
     /**
      * @brief Überprüft, ob die Anmeldedaten korrekt sind
-     * @param username Der Benutzername
+     * @param username Die Id des Benutzers
      * @param password Das Passwort
      * @return Die ID des Benutzers, wenn die Anmeldedaten falsch sind -1
      */
-    int loginDataIsCorrect(QString username, QString password);
+    int loginDataIsCorrect(int userId, QString password);
     /**
      * @brief Sucht alle Mails, die an einen Benutzer geschickt wurden
      * @param userId Die ID des Benutzers

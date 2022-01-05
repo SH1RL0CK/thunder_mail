@@ -26,10 +26,10 @@ bool DatabaseManager::userExists(QString username)
     return query.first();
 }
 
-int DatabaseManager::loginDataIsCorrect(QString username, QString password)
+int DatabaseManager::loginDataIsCorrect(int userId, QString password)
 {
-    query.prepare("SELECT user_id FROM user WHERE username = ? AND password = ?;");
-    query.bindValue(0, username);
+    query.prepare("SELECT user_id FROM user WHERE user_id = ? AND password = ?;");
+    query.bindValue(0, userId);
     query.bindValue(1, password);
     query.exec();
     if(query.first())

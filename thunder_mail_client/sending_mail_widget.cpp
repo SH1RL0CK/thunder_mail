@@ -75,7 +75,7 @@ bool SendingMailWidget::mailsAreValid(QString sender, QStringList recipients)
     {
         if(!mailRegex.exactMatch(recipients.at(i)))
         {
-            showFeedbackOutput("Gib als Empänger bitte (eine) richtige Mail-Adresse(n) an!\n(Hinweis: Mehrere Empfänger mit \",\" trennen z.B. alice@thundermail.de,bob@thundermail.de,...)", "red");
+            showFeedbackOutput("Gib als Empänger bitte (eine) richtige Mail-Adresse(n) an!\n(Hinweis: Mehrere Empfänger mit \",\" trennen z.B. alice@thunder-mail.de,bob@thunder-mail.de,...)", "red");
             return false;
         }
     }

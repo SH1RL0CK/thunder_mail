@@ -7,11 +7,12 @@ AdministrationWidget::AdministrationWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::AdministrationWidget)
     , databaseManager(new DatabaseManager)
+    , pop3Server(new Pop3Server(databaseManager))
     , smtpServer(new SmtpServer(databaseManager))
 {
     ui->setupUi(this);
-    databaseManager->delteteMail(1, 1);
-    smtpServer->startServer(4711);
+    pop3Server->startServer(4711);
+    smtpServer->startServer(4712);
 }
 
 AdministrationWidget::~AdministrationWidget()

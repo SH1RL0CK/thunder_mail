@@ -23,13 +23,13 @@ struct Mail
  */
 enum SmtpClientState
 {
-    ConnectedButNotVerified,
-    ConnectedAndVerified,
-    StartedSendingNewMail,
-    SendedAtLeastOneMailRecipient,
-    SendedRequestToSendMailContent,
-    SendedMailContent,
-    SendedQuitRequest,
+    SmtpConnectedButNotVerified,
+    SmtpConnectedAndVerified,
+    SmtpStartedSendingNewMail,
+    SmtpSendedAtLeastOneMailRecipient,
+    SmtpSendedRequestToSendMailContent,
+    SmtpSendedMailContent,
+    SmtpSendedQuitRequest,
 };
 
 
@@ -74,7 +74,9 @@ private:
      * @brief Die mit dem Server verbunden SMTP Clients
      */
     QList<SmtpClient*> clients;
-
+    /**
+     * @brief Die Schnittstelle zur Datenbank
+     */
     DatabaseManager *databaseManager;
 
     /**

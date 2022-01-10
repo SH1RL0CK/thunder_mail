@@ -12,9 +12,9 @@
  */
 enum Pop3ClientState
 {
-    ConnectedButNotVerified,
-    SendedUsername,
-    Verified,
+    Pop3ConnectedButNotVerified,
+    Pop3SendedUsername,
+    Pop3Verified,
 };
 
 struct Pop3Client

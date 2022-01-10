@@ -1,8 +1,10 @@
 #ifndef ADMINISTRATIONWIDGET_H
 #define ADMINISTRATIONWIDGET_H
 
-#include "smtp_server.h"
 #include <QWidget>
+
+#include "pop3_server.h"
+#include "smtp_server.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class AdministrationWidget; }
@@ -19,6 +21,7 @@ public:
 private:
     Ui::AdministrationWidget *ui;
     DatabaseManager *databaseManager;
+    Pop3Server *pop3Server;
     SmtpServer *smtpServer;
 };
 #endif // ADMINISTRATIONWIDGET_H

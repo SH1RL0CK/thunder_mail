@@ -16,7 +16,7 @@ void Pop3Server::newConntection()
 {
     Pop3Client *newClient = new Pop3Client;
     newClient->tcpSocket = tcpServer->nextPendingConnection();
-    newClient->state = Pop3ClientState::ConnectedButNotVerified;
+    newClient->state = Pop3ClientState::Pop3ConnectedButNotVerified;
     QObject::connect(newClient->tcpSocket, &QTcpSocket::readyRead, this, &Pop3Server::receiveAndHandleText);
     clients.append(newClient);
     sendText(newClient, "+OK");
@@ -29,36 +29,38 @@ void Pop3Server::receiveAndHandleText()
     while(clientsIterator.hasNext())
     {
         Pop3Client *currentClient = clientsIterator.next();
-        QString response = "";
-        QString receivedText = currentClient->tcpSocket->readAll();
         if(!currentClient->tcpSocket->bytesAvailable())
             continue;
-        if(receivedText.startsWith("USER ") && currentClient->state == Pop3ClientState::ConnectedButNotVerified)
+        QString response = "";
+        QString receivedText = currentClient->tcpSocket->readAll();
+        qDebug() << receivedText;
+        if(receivedText.startsWith("USER ") && currentClient->state == Pop3ClientState::Pop3ConnectedButNotVerified)
         {
-            currentClient->userId = databaseManager->userExists(receivedText.split(" ").at(1));
-            if(currentClient->userId > -1)
+            currentClient->userId = databaseManager->userExists("<" + receivedText.split(" ").at(1) + ">");
+            qDebug() << currentClient->userId;
+            if(currentClient->userId != -1)
             {
-                currentClient->state = Pop3ClientState::SendedUsername;
+                currentClient->state = Pop3ClientState::Pop3SendedUsername;
                 response = "+OK please enter password";
             }
             else
                 response = "+ERR user does not exist";
         }
-        else if(receivedText.startsWith("PASS ") && currentClient->state == Pop3ClientState::SendedUsername)
+        else if(receivedText.startsWith("PASS ") && currentClient->state == Pop3ClientState::Pop3SendedUsername)
         {
-            QString password = receivedText.split(" ").at(0);
+            QString password = receivedText.split(" ").at(1);
             if(databaseManager->loginDataIsCorrect(currentClient->userId, password))
             {
-                currentClient->state = Pop3ClientState::Verified;
+                currentClient->state = Pop3ClientState::Pop3Verified;
                 response = "+OK mailbox ready";
             }
             else
             {
-                currentClient->state = Pop3ClientState::ConnectedButNotVerified;
+                currentClient->state = Pop3ClientState::Pop3ConnectedButNotVerified;
                 response = "+ERR wrong password";
             }
         }
-        else if (currentClient->state == Pop3ClientState::Verified)
+        else if (currentClient->state == Pop3ClientState::Pop3Verified)
         {
             if(receivedText == "STAT")
             {

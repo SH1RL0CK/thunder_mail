@@ -36,16 +36,16 @@ public:
     /**
      * @brief Überpüft, ob ein Benutzer in der Datenbank exestiert
      * @param username Der Benutzername
-     * @return true, wenn der Benutzer exestiert, ansonsten false
+     * @return  Die ID des Benutzers, wenn er nicht exestiert -1
      */
-    bool userExists(QString username);
+    int userExists(QString username);
     /**
      * @brief Überprüft, ob die Anmeldedaten korrekt sind
      * @param username Die Id des Benutzers
      * @param password Das Passwort
-     * @return Die ID des Benutzers, wenn die Anmeldedaten falsch sind -1
+     * @return true, wenn die Anmeldeaten korrekt sind, ansonsten false
      */
-    int loginDataIsCorrect(int userId, QString password);
+    bool loginDataIsCorrect(int userId, QString password);
     /**
      * @brief Sucht alle Mails, die an einen Benutzer geschickt wurden
      * @param userId Die ID des Benutzers

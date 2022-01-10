@@ -18,23 +18,23 @@ void DatabaseManager::openDatabase()
     }
 }
 
-bool DatabaseManager::userExists(QString username)
+int DatabaseManager::userExists(QString username)
 {
     query.prepare("SELECT * FROM user WHERE username = ?;");
     query.bindValue(0, username);
     query.exec();
-    return query.first();
+    if(query.first())
+        return query.value(0).toInt();
+    return -1;
 }
 
-int DatabaseManager::loginDataIsCorrect(int userId, QString password)
+bool DatabaseManager::loginDataIsCorrect(int userId, QString password)
 {
     query.prepare("SELECT user_id FROM user WHERE user_id = ? AND password = ?;");
     query.bindValue(0, userId);
     query.bindValue(1, password);
     query.exec();
-    if(query.first())
-        return query.value(0).toInt();
-    return -1;
+    return query.first();
 }
 
 QList<DatabaseMail> DatabaseManager::getUsersMails(int userId)

@@ -17,7 +17,7 @@ void SmtpServer::newConntection()
     SmtpClient *newClient = new SmtpClient;
     newClient->name = "";
     newClient->tcpSocket = tcpServer->nextPendingConnection();
-    newClient->state = SmtpClientState::ConnectedButNotVerified;
+    newClient->state = SmtpClientState::SmtpConnectedButNotVerified;
     QObject::connect(newClient->tcpSocket, &QTcpSocket::readyRead, this, &SmtpServer::receiveAndHandleText);
     clients.append(newClient);
     sendText(newClient, "220 Service ready");
@@ -35,7 +35,7 @@ void SmtpServer::receiveAndHandleText()
         QString response = "";
         QString receivedText = currentClient->tcpSocket->readAll();
         // Der Client schickt den Mailinhalt.
-        if(currentClient->state == SmtpClientState::SendedRequestToSendMailContent)
+        if(currentClient->state == SmtpClientState::SmtpSendedRequestToSendMailContent)
         {
             if(receivedText.endsWith("\n."))
             {
@@ -43,7 +43,7 @@ void SmtpServer::receiveAndHandleText()
                 receivedText.chop(2);
                 currentClient->currentMail->content = receivedText;
                 databaseManager->storeMail(currentClient->currentMail->recipients, currentClient->currentMail->content);
-                currentClient->state = SmtpClientState::ConnectedAndVerified;
+                currentClient->state = SmtpClientState::SmtpConnectedAndVerified;
             }
             else
                 response = "521 Machine does not accpet mail";
@@ -51,10 +51,10 @@ void SmtpServer::receiveAndHandleText()
         // Der Client hat eine Verifizierungsanfrage an den Server gestellt.
         else if(receivedText.startsWith("HELO "))
         {
-            if(currentClient->state == SmtpClientState::ConnectedButNotVerified)
+            if(currentClient->state == SmtpClientState::SmtpConnectedButNotVerified)
             {
                 currentClient->name = receivedText.split(" ").at(1);
-                currentClient->state = SmtpClientState::ConnectedAndVerified;
+                currentClient->state = SmtpClientState::SmtpConnectedAndVerified;
                 response = "250 OK";
             }
             else
@@ -63,11 +63,11 @@ void SmtpServer::receiveAndHandleText()
         // Der Client hat möchte eine neue Mail senden.
         else if(receivedText.startsWith("MAIL FROM:"))
         {
-            if(currentClient->state == SmtpClientState::ConnectedAndVerified)
+            if(currentClient->state == SmtpClientState::SmtpConnectedAndVerified)
             {
                 currentClient->currentMail = new Mail;
                 currentClient->currentMail->sender = receivedText.split(":").at(1);
-                currentClient->state = SmtpClientState::StartedSendingNewMail;
+                currentClient->state = SmtpClientState::SmtpStartedSendingNewMail;
                 response = "250 OK";
             }
             else
@@ -76,10 +76,10 @@ void SmtpServer::receiveAndHandleText()
         // Der Client schickt den/die Empfänger der Mail.
         else if(receivedText.startsWith("RCPT TO:"))
         {
-            if(currentClient->state == SmtpClientState::StartedSendingNewMail || currentClient->state == SmtpClientState::SendedAtLeastOneMailRecipient)
+            if(currentClient->state == SmtpClientState::SmtpStartedSendingNewMail || currentClient->state == SmtpClientState::SmtpSendedAtLeastOneMailRecipient)
             {
                 currentClient->currentMail->recipients.append(receivedText.split(":").at(1));
-                currentClient->state = SmtpClientState::SendedAtLeastOneMailRecipient;
+                currentClient->state = SmtpClientState::SmtpSendedAtLeastOneMailRecipient;
                 response = "250 OK";
             }
             else
@@ -88,9 +88,9 @@ void SmtpServer::receiveAndHandleText()
         // Der Client möchte den Mailinhalt übertragen.
         else if(receivedText == "DATA")
         {
-            if(currentClient->state == SmtpClientState::SendedAtLeastOneMailRecipient)
+            if(currentClient->state == SmtpClientState::SmtpSendedAtLeastOneMailRecipient)
             {
-                currentClient->state = SmtpClientState::SendedRequestToSendMailContent;
+                currentClient->state = SmtpClientState::SmtpSendedRequestToSendMailContent;
                 response = "354 Start mail input";
             }
             else
@@ -99,8 +99,8 @@ void SmtpServer::receiveAndHandleText()
          // Der Client möchte die aktuelle Mailübertragung abbrechen.
         else if(receivedText == "RSET")
         {
-            if(currentClient->state != SmtpClientState::ConnectedButNotVerified){
-                currentClient->state = SmtpClientState::ConnectedAndVerified;
+            if(currentClient->state != SmtpClientState::SmtpConnectedButNotVerified){
+                currentClient->state = SmtpClientState::SmtpConnectedAndVerified;
                 delete currentClient->currentMail;
                 currentClient->currentMail = nullptr;
                 response = "250 OK";

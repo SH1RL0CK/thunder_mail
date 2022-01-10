@@ -11,22 +11,22 @@
  */
 enum SmtpClientState
 {
-    NotConnected,
-    ConnectedToServer,
-    SendedVerifyRequest,
-    VerifiedAtServer,
-    StartedSendingNewMail,
-    SendedRequestToSendMailContent,
-    SendedMailContent,
-    SendedQuitRequest,
-    SendedNoOperationCommand,
-    SendedResetRequest,
+    SmtpNotConnected,
+    SmtpConnectedToServer,
+    SmtpSendedVerifyRequest,
+    SmtpVerifiedAtServer,
+    SmtpStartedSendingNewMail,
+    SmtpSendedRequestToSendMailContent,
+    SmtpSendedMailContent,
+    SmtpSendedQuitRequest,
+    SmtpSendedNoOperationCommand,
+    SmtpSendedResetRequest,
 };
 
 /**
  * @brief Struktur zum Speichern der Mail, die gerade verschickt wird
  */
-struct Mail
+struct SmtpClientMail
 {
     QString sender = "";
     QStringList recipients;
@@ -44,6 +44,7 @@ public:
     explicit SmtpClient(QObject *parent = nullptr);
 
     QString getLastestError();
+    SmtpClientState getState();
     /**
      * @brief Der SMTP Client verbindet sich mit dem SMTP Server
      * @param ipAdress  Die IP-Adresse des SMTP Servers
@@ -103,7 +104,7 @@ private:
     /**
      * @brief Die Mail, die gereade verschickt wird
      */
-    Mail *currentMail;
+    SmtpClientMail *currentMail;
     /**
      * @brief Der Letzte Fehler, der aufgetreten ist.
      */

@@ -16,6 +16,7 @@ SendingMailWidget::SendingMailWidget(SmtpClient *_smtpClient, QString sender, QW
 
 SendingMailWidget::~SendingMailWidget()
 {
+    smtpClient->disconnect();
     delete ui;
 }
 

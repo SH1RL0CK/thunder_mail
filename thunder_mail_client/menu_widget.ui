@@ -7,12 +7,147 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Thundermtail Client</string>
+   <string>Thunde Mail Client: Posteingang</string>
   </property>
+  <widget class="QPushButton" name="sendMailPushButton">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>30</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Neue Mail verfassen</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="receiveMailsPushButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>30</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Mails empfangen</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>70</y>
+     <width>601</width>
+     <height>691</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Alle Mails:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTableWidget" name="mailsTableWidget">
+      <column>
+       <property name="text">
+        <string>Absender</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Betreff</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Datum , Uhrzeit</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="mailContentLabel">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Mailinhalt:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="senderLabel">
+        <property name="text">
+         <string>Absender:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="senderLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="recipientsLabel">
+        <property name="text">
+         <string>Empfänger:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="recipientsLineEdit"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="dateTimeLabel">
+        <property name="text">
+         <string>Datum und Uhrzeit:</string>
+        </property>
+        <property name="buddy">
+         <cstring>dateTimeLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="dateTimeLineEdit"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="subjetLabel">
+        <property name="text">
+         <string>Betreff:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="subjectLineEdit"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="bodyTextEdit"/>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>

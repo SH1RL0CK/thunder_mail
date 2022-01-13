@@ -109,6 +109,16 @@ void SmtpServer::receiveAndHandleText()
             else
                 response = "503 Bad sequence of commands";
         }
+        // Überprüft ob eine Adresse auf dem Server zu finden ist
+        else if(receivedText.startsWith("VRFY "))
+        {
+            QString username = receivedText.split(" ").at(1);
+            int userId = databaseManager->userExists(username);
+            if(userId != -1)
+                response = "250 " + username;
+            else
+                response = "252 i will try my best";
+        }
         // Der Client möchte eine einfache Antwort vom Server.
         else if(receivedText == "NOOP")
         {

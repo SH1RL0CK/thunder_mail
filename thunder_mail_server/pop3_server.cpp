@@ -19,6 +19,7 @@ void Pop3Server::newConntection()
     newClient->state = Pop3ClientState::Pop3ConnectedButNotVerified;
     QObject::connect(newClient->tcpSocket, &QTcpSocket::readyRead, this, &Pop3Server::receiveAndHandleText);
     clients.append(newClient);
+    emit connectEvent("Ein neuer Client hat sich verbunden.", clients.size());
     sendText(newClient, "+OK");
 }
 
@@ -33,11 +34,12 @@ void Pop3Server::receiveAndHandleText()
             continue;
         QString response = "";
         QString receivedText = currentClient->tcpSocket->readAll();
+        emit newMessage(currentClient->username, receivedText);
         qDebug() << receivedText;
         if(receivedText.startsWith("USER ") && currentClient->state == Pop3ClientState::Pop3ConnectedButNotVerified)
         {
-            currentClient->userId = databaseManager->userExists("<" + receivedText.split(" ").at(1) + ">");
-            qDebug() << currentClient->userId;
+            currentClient->username = "<" + receivedText.split(" ").at(1) + ">";
+            currentClient->userId = databaseManager->userExists(currentClient->username);
             if(currentClient->userId != -1)
             {
                 currentClient->state = Pop3ClientState::Pop3SendedUsername;
@@ -137,5 +139,6 @@ void Pop3Server::receiveAndHandleText()
 void Pop3Server::sendText(Pop3Client *client, QString text)
 {
     client->tcpSocket->write(text.toLatin1());
+    newMessage("Server", text);
     qDebug() << "send: " << text;
 }

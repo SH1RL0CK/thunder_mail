@@ -15,11 +15,11 @@ void SmtpServer::startServer(unsigned int port)
 void SmtpServer::newConntection()
 {
     SmtpClient *newClient = new SmtpClient;
-    newClient->name = "";
     newClient->tcpSocket = tcpServer->nextPendingConnection();
     newClient->state = SmtpClientState::SmtpConnectedButNotVerified;
     QObject::connect(newClient->tcpSocket, &QTcpSocket::readyRead, this, &SmtpServer::receiveAndHandleText);
     clients.append(newClient);
+    emit connectEvent("Ein neuer Client hat sich verbunden.", clients.size());
     sendText(newClient, "220 Service ready");
 }
 
@@ -34,6 +34,7 @@ void SmtpServer::receiveAndHandleText()
             continue;
         QString response = "";
         QString receivedText = currentClient->tcpSocket->readAll();
+        emit newMessage(currentClient->name, receivedText);
         // Der Client schickt den Mailinhalt.
         if(currentClient->state == SmtpClientState::SmtpSendedRequestToSendMailContent)
         {
@@ -136,5 +137,6 @@ void SmtpServer::receiveAndHandleText()
 void SmtpServer::sendText(SmtpClient *client, QString text)
 {
     client->tcpSocket->write(text.toLatin1());
+    emit newMessage("Server", text);
     qDebug() << "send: " << text;
 }

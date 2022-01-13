@@ -18,10 +18,22 @@ public:
     AdministrationWidget(QWidget *parent = nullptr);
     ~AdministrationWidget();
 
+private slots:
+    void on_startServerPushButton_clicked();
+
+    void pop3ConnectEvent(QString message, int numberOfClients);
+    void smtpConnectEvent(QString message, int numberOfClients);
+
+    void pop3Message(QString sender, QString message);
+    void smtpMessage(QString sender, QString message);
+
 private:
     Ui::AdministrationWidget *ui;
     DatabaseManager *databaseManager;
     Pop3Server *pop3Server;
     SmtpServer *smtpServer;
+
+    void pop3LogMessage(QString message);
+    void smtpLogMessage(QString message);
 };
 #endif // ADMINISTRATIONWIDGET_H

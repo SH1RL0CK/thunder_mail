@@ -38,7 +38,7 @@ enum SmtpClientState
 */
 struct SmtpClient
 {
-    QString name;
+    QString name = "(Unverified User)";
     QTcpSocket *tcpSocket;
     SmtpClientState state;
     Mail *currentMail;
@@ -54,6 +54,10 @@ public:
      * @param port  Der Port, auf dem der Server läuft
      */
     void startServer(unsigned int port);
+
+signals:
+    void connectEvent(QString message, int numberOfClients);
+    void newMessage(QString sender, QString message);
 
 private slots:
     /**

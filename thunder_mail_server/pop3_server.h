@@ -20,6 +20,7 @@ enum Pop3ClientState
 struct Pop3Client
 {
     int userId;
+    QString username = "(Unverified User)";
     QTcpSocket *tcpSocket;
     Pop3ClientState state;
     QList<DatabaseMail> mails;
@@ -37,6 +38,12 @@ public:
      * @param port  Der Port, auf dem der Server läuft
      */
     void startServer(unsigned int port);
+
+signals:
+
+    void connectEvent(QString message, int numberOfClients);
+    void newMessage(QString sender, QString message);
+
 
 private slots:
     /**
@@ -68,6 +75,7 @@ private:
      * @param text  Der zur schickende Text
      */
     void sendText(Pop3Client *client, QString text);
+
 };
 
 #endif // POP3SERVER_H

@@ -37,11 +37,20 @@ bool DatabaseManager::loginDataIsCorrect(int userId, QString password)
     return query.first();
 }
 
-QList<DatabaseMail> DatabaseManager::getUsersMails(int userId)
+QList<DatabaseMail> DatabaseManager::getUsersMails(int userId, int limit)
 {
     QList<DatabaseMail> mails;
-    query.prepare("SELECT mail.mail_id, mail.content FROM mail INNER JOIN recipient ON mail.mail_id = recipient.mail_id WHERE recipient.user_id = ?;");
-    query.bindValue(0, userId);
+    if(limit != -1)
+    {
+        query.prepare("SELECT mail.mail_id, mail.content FROM mail INNER JOIN recipient ON mail.mail_id = recipient.mail_id WHERE recipient.user_id = ?;");
+        query.bindValue(0, userId);
+    }
+    else
+    {
+        query.prepare("SELECT mail.mail_id, mail.content FROM mail INNER JOIN recipient ON mail.mail_id = recipient.mail_id WHERE recipient.user_id = ? LIMIT ?;");
+        query.bindValue(0, userId);
+        query.bindValue(1, limit);
+    }
     query.exec();
     while (query.next())
     {

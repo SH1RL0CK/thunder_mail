@@ -76,7 +76,10 @@ void Pop3Server::receiveAndHandleText()
             }
             else if(receivedText.startsWith("LIST"))
             {
-                currentClient->mails = databaseManager->getUsersMails(currentClient->userId);
+                int limit = -1;
+                if(receivedText.split(" ").size() > 1)
+                    limit = receivedText.split(" ").at(1).toInt();
+                currentClient->mails = databaseManager->getUsersMails(currentClient->userId, limit);
                 response = "";
                 int mailsSize = 0;
                 for(int i = 0; i < currentClient->mails.size(); i++)

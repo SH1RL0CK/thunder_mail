@@ -51,7 +51,7 @@ public:
      * @param userId Die ID des Benutzers
      * @return Die Mails
      */
-    QList<DatabaseMail> getUsersMails(int userId);
+    QList<DatabaseMail> getUsersMails(int userId, int limit = -1);
     /**
      * @brief Sucht den Inhalt einer Mail
      * @param recipientId Die ID in der Tabelle "mail"

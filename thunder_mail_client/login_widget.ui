@@ -116,6 +116,9 @@
           <property name="text">
            <string>password</string>
           </property>
+          <property name="echoMode">
+           <enum>QLineEdit::PasswordEchoOnEdit</enum>
+          </property>
          </widget>
         </item>
        </layout>
@@ -177,6 +180,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QLabel" name="pop3OutputLabel">
+        <property name="styleSheet">
+         <string notr="true">color: red</string>
+        </property>
         <property name="text">
          <string/>
         </property>

@@ -19,9 +19,12 @@ SmtpClientState SmtpClient::getState()
 
 void SmtpClient::connectToServer(QString ipAdress, unsigned int port)
 {
-    tcpSocket->connectToHost(ipAdress, port);
-    state = SmtpClientState::SmtpConnectedToServer;
-    QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmtpClient::receiveText);
+    if(state == SmtpClientState::SmtpNotConnected)
+    {
+        tcpSocket->connectToHost(ipAdress, port);
+        state = SmtpClientState::SmtpConnectedToServer;
+        QObject::connect(tcpSocket, &QTcpSocket::readyRead, this, &SmtpClient::receiveText);
+    }
 }
 
 void SmtpClient::sendMail(QString sender, QStringList recipients, QString subject, QString body)
@@ -167,6 +170,7 @@ void SmtpClient::handleReceivedText(QString receivedText)
     {
         tcpSocket->disconnectFromHost();
         state = SmtpClientState::SmtpNotConnected;
+        emit quittedServer();
     }
     else
     {

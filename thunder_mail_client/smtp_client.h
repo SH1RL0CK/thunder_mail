@@ -86,6 +86,8 @@ signals:
      */
     void sendingMaiFailed();
 
+    void quittedServer();
+
 private slots:
     /**
      * @brief Der Client empfängt Text vom Server

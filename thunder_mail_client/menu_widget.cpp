@@ -10,6 +10,8 @@ MenuWidget::MenuWidget(Pop3Client *_pop3Client, SmtpClient *_smtpClient, QWidget
 {
     ui->setupUi(this);
     QObject::connect(pop3Client, &Pop3Client::receivedAllMails, this, &MenuWidget::receivedAllMails);
+    QObject::connect(pop3Client, &Pop3Client::quittedServer, this, &MenuWidget::quittedServer);
+    QObject::connect(smtpClient, &SmtpClient::quittedServer, this, &MenuWidget::quittedServer);
     pop3Client->getAllMails();
     // Die Spaltengröße der Tabelle mit den Mails, passt sich der Gesmatgröße der Tabelle an
     ui->mailsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -42,6 +44,14 @@ void MenuWidget::receivedAllMails()
     showMail(0);
 }
 
+void MenuWidget::quittedServer()
+{
+    if(pop3Client->getState() == Pop3ClientState::Pop3NotConnected && smtpClient->getState() == SmtpClientState::SmtpNotConnected)
+    {
+       this->close();
+    }
+}
+
 void MenuWidget::on_receiveMailsPushButton_clicked()
 {
     pop3Client->getAllMails();
@@ -64,19 +74,25 @@ void MenuWidget::showMail(int mailIndex)
     ui->mailContentLabel->setText("Inhalt (Mail " + QString::number(mailIndex + 1) + "):");
 }
 
-void MenuWidget::closeEvent(QCloseEvent *bar)
+void MenuWidget::closeEvent(QCloseEvent *event)
 {
-    pop3Client->quit();
-    smtpClient->sendQuitRequest();
-    bar->accept();
+    if(pop3Client->getState() == Pop3ClientState::Pop3NotConnected && smtpClient->getState() == SmtpClientState::SmtpNotConnected)
+    {
+
+        event->accept();
+    }
+    else
+    {
+        pop3Client->quit();
+        smtpClient->sendQuitRequest();
+        event->ignore();
+    }
 }
 
 
 void MenuWidget::on_deleteMailPushButton_clicked()
 {
-    //pop3Client->deleteMail(selectedMailIndex + 1);
-    pop3Client->quit();
-    smtpClient->sendQuitRequest();
+    pop3Client->deleteMail(selectedMailIndex + 1);
 }
 
 void MenuWidget::on_resetPushButton_clicked()

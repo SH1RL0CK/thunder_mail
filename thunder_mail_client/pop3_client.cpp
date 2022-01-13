@@ -28,10 +28,18 @@ QList<Pop3ClientMail> Pop3Client::getReceivedMails()
 
 void Pop3Client::connectToServer(QString ipAdress, unsigned int port, QString _username, QString _password)
 {
-    tcpSocket->connectToHost(ipAdress, port);
-    state = Pop3ClientState::Pop3ConnectedToServer;
     username = _username;
     password = _password;
+    if(state == Pop3ClientState::Pop3NotConnected)
+    {
+        tcpSocket->connectToHost(ipAdress, port);
+        state = Pop3ClientState::Pop3ConnectedToServer;
+    }
+    else if(state == Pop3ClientState::Pop3ConnectedToServer)
+    {
+        sendText("USER " + username);
+        state = Pop3ClientState::Pop3SendedUsername;
+    }
 }
 
 void Pop3Client::getAllMails()
@@ -128,9 +136,21 @@ void Pop3Client::handleReceivedText(QString receivedText)
             case Pop3ClientState::Pop3SendedQuitRequest:
                 tcpSocket->disconnectFromHost();
                 state = Pop3ClientState::Pop3NotConnected;
+                emit quittedServer();
                 break;
             case Pop3ClientState::Pop3SendedNoOperationCommand:
                 state = Pop3ClientState::Pop3VerifiedAtServer;
+                break;
+        }
+    } else if(responseStatus == "+ERR")
+    {
+        switch(state)
+        {
+            case Pop3ClientState::Pop3SendedUsername:
+            case Pop3ClientState::Pop3SendedPassword:
+                state = Pop3ClientState::Pop3ConnectedToServer;
+                emit verificationFailed();
+                break;
         }
     }
 }

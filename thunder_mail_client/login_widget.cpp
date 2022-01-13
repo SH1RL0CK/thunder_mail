@@ -9,6 +9,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 {
     ui->setupUi(this);
     QObject::connect(pop3Client, &Pop3Client::verifiedSuccessfully, this, &LoginWidget::clientWasVerifiedSuccessfully);
+    QObject::connect(pop3Client, &Pop3Client::verificationFailed, this, &LoginWidget::loginFailed);
     QObject::connect(smtpClient, &SmtpClient::connectedToServerSuccessfully, this, &LoginWidget::clientWasVerifiedSuccessfully);
 }
 
@@ -19,6 +20,13 @@ LoginWidget::~LoginWidget()
 
 void LoginWidget::on_loginPushButton_clicked()
 {
+    ui->pop3OutputLabel->setText("");
+    ui->thunderMailServerAdressLineEdit->setDisabled(true);
+    ui->smtpSeverPortSpinBox->setDisabled(true);
+    ui->pop3ServerPortSpinBox->setDisabled(true);
+    ui->pop3ServerUsernameLineEdit->setDisabled(true);
+    ui->pop3ServerPasswordLineEdit->setDisabled(true);
+
     QString address = ui->thunderMailServerAdressLineEdit->text();
     int pop3Port = ui->pop3ServerPortSpinBox->value();
     QString pop3Username = ui->pop3ServerUsernameLineEdit->text();
@@ -39,4 +47,11 @@ void LoginWidget::clientWasVerifiedSuccessfully()
         this->hide();
         this->close();
     }
+}
+
+void LoginWidget::loginFailed()
+{
+    ui->pop3ServerUsernameLineEdit->setDisabled(false);
+    ui->pop3ServerPasswordLineEdit->setDisabled(false);
+    ui->pop3OutputLabel->setText("Der Benutzername oder das Passwort sind falsch!");
 }

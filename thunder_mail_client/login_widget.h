@@ -23,6 +23,7 @@ public:
 private slots:
     void on_loginPushButton_clicked();
     void clientWasVerifiedSuccessfully();
+    void loginFailed();
 
 private:
     Ui::LoginWidget *ui;

@@ -64,14 +64,17 @@ signals:
      */
     void verifiedSuccessfully();
 
+    void verificationFailed();
+
     void receivedAllMails();
+
+     void quittedServer();
 
 private slots:
     /**
      * @brief Der Client empfängt Text vom Server
      */
     void receiveText();
-
 
 private:
     /**

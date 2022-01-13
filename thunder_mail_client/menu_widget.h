@@ -25,9 +25,12 @@ public:
     ~MenuWidget();
 
 private slots:
+
     void on_sendMailPushButton_clicked();
 
     void receivedAllMails();
+
+    void quittedServer();
 
     void on_receiveMailsPushButton_clicked();
 
@@ -48,5 +51,6 @@ private:
     void showMail(int mailIndex);
 
     void closeEvent(QCloseEvent *bar);
+
 };
 #endif // MENUWIDGET_H

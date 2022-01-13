@@ -34,6 +34,7 @@ private slots:
      */
     void sendingMailFailed();
 
+
 private:
     Ui::SendingMailWidget *ui;
     /**
@@ -59,6 +60,7 @@ private:
      * @param disabled
      */
     void setInputsDisabled(bool disabled);
+
 };
 
 #endif // SENDING_MAIL_WIDGET_H

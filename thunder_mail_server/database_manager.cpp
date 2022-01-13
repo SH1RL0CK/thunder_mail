@@ -40,6 +40,7 @@ bool DatabaseManager::loginDataIsCorrect(int userId, QString password)
 QList<DatabaseMail> DatabaseManager::getUsersMails(int userId, int limit)
 {
     QList<DatabaseMail> mails;
+    //Falls das Limt nicht -1 wird es bei der Abfrag berücksichtigt
     if(limit != -1)
     {
         query.prepare("SELECT mail.mail_id, mail.content FROM mail INNER JOIN recipient ON mail.mail_id = recipient.mail_id WHERE recipient.user_id = ?;");

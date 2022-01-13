@@ -67,7 +67,6 @@ void SmtpClient::receiveText()
     if(tcpSocket->bytesAvailable())
     {
         QString receivedText = tcpSocket->readAll();
-        qDebug() << "received: " << receivedText;
         handleReceivedText(receivedText);
     }
 }
@@ -97,7 +96,6 @@ void SmtpClient::sendText(QString text)
     if(state != SmtpClientState::SmtpNotConnected)
     {
         tcpSocket->write(text.toLatin1());
-        qDebug() << "send: " << text;
     }
 }
 

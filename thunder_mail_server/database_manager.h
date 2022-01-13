@@ -28,7 +28,6 @@ class DatabaseManager
 {
 public:
     DatabaseManager();
-
     /**
      * @brief Öffnet die Datenbank-Sizung
      */
@@ -49,6 +48,7 @@ public:
     /**
      * @brief Sucht alle Mails, die an einen Benutzer geschickt wurden
      * @param userId Die ID des Benutzers
+     * @param limit Limitierung für die Anzahl der Mails (wird nicht beachtet wenn -1)
      * @return Die Mails
      */
     QList<DatabaseMail> getUsersMails(int userId, int limit = -1);

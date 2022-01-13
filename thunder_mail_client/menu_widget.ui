@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Thunde Mail Client: Posteingang</string>
+   <string>Thunder Mail Client: Posteingang</string>
   </property>
   <widget class="QPushButton" name="sendMailPushButton">
    <property name="geometry">

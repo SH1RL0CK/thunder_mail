@@ -35,7 +35,6 @@ void Pop3Server::receiveAndHandleText()
         QString response = "";
         QString receivedText = currentClient->tcpSocket->readAll();
         emit newMessage(currentClient->username, receivedText);
-        qDebug() << receivedText;
         if(receivedText.startsWith("USER ") && currentClient->state == Pop3ClientState::Pop3ConnectedButNotVerified)
         {
             currentClient->username = "<" + receivedText.split(" ").at(1) + ">";
@@ -64,6 +63,7 @@ void Pop3Server::receiveAndHandleText()
         }
         else if (currentClient->state == Pop3ClientState::Pop3Verified)
         {
+            // Liefert die Anzahl und Größe aller Mails
             if(receivedText == "STAT")
             {
                 currentClient->mails = databaseManager->getUsersMails(currentClient->userId);
@@ -74,6 +74,7 @@ void Pop3Server::receiveAndHandleText()
                 }
                 response = "+OK " + QString::number(currentClient->mails.size()) + " " + QString::number(mailsSize);
             }
+            // Liefert die Größe der Mails einzeln
             else if(receivedText.startsWith("LIST"))
             {
                 int limit = -1;
@@ -90,6 +91,7 @@ void Pop3Server::receiveAndHandleText()
                 }
                 response = "+OK mailbox has " + QString::number(currentClient->mails.size()) + " mail (" + QString::number(mailsSize) + " octets)\n" + response + "\n.";
             }
+            // Liefert den Inhalt einer Mail
             else if(receivedText.startsWith("RETR "))
             {
                 int indexInList = receivedText.split(" ").at(1).toInt() -1;
@@ -99,6 +101,7 @@ void Pop3Server::receiveAndHandleText()
                 else
                     response = "+ERR mail does not exist";
             }
+            // Makiert eine Mail als gelöscht
             else if(receivedText.startsWith("DELE "))
             {
                 int indexInList = receivedText.split(" ").at(1).toInt() -1;
@@ -109,15 +112,18 @@ void Pop3Server::receiveAndHandleText()
                 else
                     response = "+ERR mail does not exist";
             }
+            // Gibt einfach eine Antwoer
             else if(receivedText == "NOOP")
             {
                 response = "+OK";
             }
+            // Setzt alle Löschungen zurück
             else if(receivedText == "RSET")
             {
                 currentClient->mailsToBeDeleted.clear();
                 response = "+OK everything reseted";
             }
+            // Trennt die Verbindung und führt alle Löschungen durch
             else if(receivedText == "QUIT")
             {
                 for(int i = 0; i < currentClient->mailsToBeDeleted.size(); i++)
@@ -145,5 +151,4 @@ void Pop3Server::sendText(Pop3Client *client, QString text)
 {
     client->tcpSocket->write(text.toLatin1());
     newMessage("Server", text);
-    qDebug() << "send: " << text;
 }

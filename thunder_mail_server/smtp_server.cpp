@@ -150,5 +150,4 @@ void SmtpServer::sendText(SmtpClient *client, QString text)
 {
     client->tcpSocket->write(text.toLatin1());
     emit newMessage("Server", text);
-    qDebug() << "send: " << text;
 }

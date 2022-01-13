@@ -85,7 +85,9 @@ signals:
      * @brief Bei Senden der Mail gab es einen Fehler
      */
     void sendingMaiFailed();
-
+    /**
+     * @brief Die Verbindung zum Server wurde getrennt
+     */
     void quittedServer();
 
 private slots:

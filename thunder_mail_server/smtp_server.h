@@ -56,7 +56,17 @@ public:
     void startServer(unsigned int port);
 
 signals:
+    /**
+     * @brief Ein Client hat sich mit dem Server verbunden/Verbindung getrennt
+     * @param message Die Nachricht
+     * @param numberOfClients Die neue Anzahl der Clients
+     */
     void connectEvent(QString message, int numberOfClients);
+    /**
+     * @brief Neue Nachricht im Protokoll
+     * @param sender Der Sender
+     * @param message Die Nachricht
+     */
     void newMessage(QString sender, QString message);
 
 private slots:

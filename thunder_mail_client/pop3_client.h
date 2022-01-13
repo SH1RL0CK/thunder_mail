@@ -32,6 +32,9 @@ enum Pop3ClientState
     Pop3SendedQuitRequest,
 };
 
+/**
+ * @brief Diese Klasse stellt den POP3-Client dar
+ */
 class Pop3Client : public QObject
 {
     Q_OBJECT
@@ -47,15 +50,27 @@ public:
      * @param port Der Port auf dem der POP3-Server läuft
      */
     void connectToServer(QString ipAdress, unsigned int port, QString _username, QString _password);
-
+    /**
+     * @brief Leitet das Holen der Mails vom Server ein
+     */
     void getAllMails();
 
+    /**
+     * @brief Makiert eine Mail zum Löschen
+     * @param mailIndex Der Index der Mail
+     */
     void deleteMail(int mailIndex);
-
+    /**
+     * @brief Verwirfft alle Änderungen
+     */
     void reset();
-
+    /**
+     * @brief Pingt den Server an
+     */
     void sendNoOperationCommand();
-
+    /**
+     * @brief Sendet die QUIT-Anfrage an den Server
+     */
     void quit();
 
 signals:
@@ -63,12 +78,18 @@ signals:
      * @brief Der Client hat sich erfolgreich am Server verifiziert
      */
     void verifiedSuccessfully();
-
+    /**
+     * @brief Die Anmeldung ist gescheidert
+     */
     void verificationFailed();
-
+    /**
+     * @brief Alle Mails wurden geschickt
+     */
     void receivedAllMails();
-
-     void quittedServer();
+    /**
+     * @brief Der Client hat eine Antwort auf seine QUIT-Anfrage erhalten
+     */
+    void quittedServer();
 
 private slots:
     /**
@@ -91,25 +112,42 @@ private:
      */
     QString username;
     QString password;
-
+    /**
+     * @brief Die Anzahl aller Mails, die gerade vom Server geholt werden
+     */
     int numberOfAllMails;
-
+    /**
+     * @brief Der aktuelle Mail-Index (der gerade vom Server geholt wird)
+     */
     int currentMailIndex;
-
+    /**
+     * @brief Die Mails, die zum löschen makiert sind, dient zum Anzeigen in der GUI
+     */
     QList<int> mailsMarkedForDelete;
-
+    /**
+     * @brief Alle empfangenen Mails
+     */
     QList<Pop3ClientMail> receivedMails;
     /**
      * @brief Schickt einen Text an der Server
      * @param text Der zur schickende Text
      */
+
     void sendText(QString text);
     /**
      * @brief Verarbeitet die Antworten, die der POP3-Client vom Server empfängt
      * @param receivedText Der empfangene Text
      */
     void handleReceivedText(QString receivedText);
+    /**
+     * @brief Holt sich die nächste Mail vom Server, bis alle geholt sind
+     */
     void getNextMail();
+    /**
+     * @brief Erzeugt aus dem Inhalt einer Mail, ein Pop3ClientMail Objekt
+     * @param content Der Inhalt
+     * @return Das erzeugt Pop3ClientMail Objekt
+     */
     Pop3ClientMail createPop3ClientMail(QString content);
 };
 

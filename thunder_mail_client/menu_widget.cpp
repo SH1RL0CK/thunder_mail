@@ -15,6 +15,7 @@ MenuWidget::MenuWidget(Pop3Client *_pop3Client, SmtpClient *_smtpClient, QWidget
     pop3Client->getAllMails();
     // Die Spaltengröße der Tabelle mit den Mails, passt sich der Gesmatgröße der Tabelle an
     ui->mailsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // Keine Bearbeitung in der der Tabelle nötig
     ui->mailsTableWidget->setEditTriggers(QAbstractItemView::EditTriggers(0));
 }
 
@@ -32,8 +33,10 @@ void MenuWidget::on_sendMailPushButton_clicked()
 void MenuWidget::receivedAllMails()
 {
     QList<Pop3ClientMail> mails = pop3Client->getReceivedMails();
+    // Setzt die Tabelle zurück
     ui->mailsTableWidget->setRowCount(0);
     ui->mailsTableWidget->setRowCount(mails.size());
+    // Baut den Inhalt der Mail zusammen
     for (int i = 0; i < mails.size(); i++)
     {
         ui->mailsTableWidget->setItem(i, 0, new QTableWidgetItem(mails.at(i).sender));
@@ -42,6 +45,7 @@ void MenuWidget::receivedAllMails()
         ui->mailsTableWidget->setItem(i, 3, new QTableWidgetItem(mails.at(i).marktForDelete ? "Ja" : "Nein"));
     }
     ui->mailsTableWidget->scrollToBottom();
+    //Zeigt den Inhalt der neusten Mail
     if(mails.size() > 0)
         showMail(mails.size() - 1);
 }
@@ -78,6 +82,7 @@ void MenuWidget::showMail(int mailIndex)
 
 void MenuWidget::closeEvent(QCloseEvent *event)
 {
+    // Schließt das Fenster erst, wenn beide Verbindungen geschlossen sind
     if(pop3Client->getState() == Pop3ClientState::Pop3NotConnected && smtpClient->getState() == SmtpClientState::SmtpNotConnected)
     {
         event->accept();

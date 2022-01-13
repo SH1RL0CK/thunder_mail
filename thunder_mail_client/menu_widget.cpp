@@ -6,6 +6,7 @@ MenuWidget::MenuWidget(Pop3Client *_pop3Client, SmtpClient *_smtpClient, QWidget
     , ui(new Ui::MenuWidget)
     , pop3Client(_pop3Client)
     , smtpClient(_smtpClient)
+    , selectedMailIndex(-1)
 {
     ui->setupUi(this);
     QObject::connect(pop3Client, &Pop3Client::receivedAllMails, this, &MenuWidget::receivedAllMails);
@@ -33,9 +34,10 @@ void MenuWidget::receivedAllMails()
     ui->mailsTableWidget->setRowCount(mails.size());
     for (int i = 0; i < mails.size(); i++)
     {
-        ui->mailsTableWidget->setItem(i, 2, new QTableWidgetItem(mails.at(i).dateTime));
         ui->mailsTableWidget->setItem(i, 0, new QTableWidgetItem(mails.at(i).sender));
         ui->mailsTableWidget->setItem(i, 1, new QTableWidgetItem(mails.at(i).subject));
+        ui->mailsTableWidget->setItem(i, 2, new QTableWidgetItem(mails.at(i).dateTime));
+        ui->mailsTableWidget->setItem(i, 3, new QTableWidgetItem(mails.at(i).marktForDelete ? "Ja" : "Nein"));
     }
     showMail(0);
 }
@@ -52,6 +54,7 @@ void MenuWidget::on_mailsTableWidget_cellClicked(int row, int column)
 
 void MenuWidget::showMail(int mailIndex)
 {
+    selectedMailIndex = mailIndex;
     Pop3ClientMail mail = pop3Client->getReceivedMails().at(mailIndex);
     ui->senderLineEdit->setText(mail.sender);
     ui->recipientsLineEdit->setText(mail.recipients);
@@ -59,4 +62,14 @@ void MenuWidget::showMail(int mailIndex)
     ui->subjectLineEdit->setText(mail.subject);
     ui->bodyTextEdit->setPlainText(mail.body);
     ui->mailContentLabel->setText("Inhalt (Mail " + QString::number(mailIndex + 1) + "):");
+}
+
+void MenuWidget::on_deleteMailPushButton_clicked()
+{
+    pop3Client->deleteMail(selectedMailIndex + 1);
+}
+
+void MenuWidget::on_resetPushButton_clicked()
+{
+    pop3Client->reset();
 }

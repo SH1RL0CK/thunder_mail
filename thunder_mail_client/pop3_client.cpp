@@ -40,6 +40,19 @@ void Pop3Client::getAllMails()
     state = Pop3ClientState::Pop3SendedStatCommand;
 }
 
+void Pop3Client::deleteMail(int mailIndex)
+{
+    sendText("DELE " + QString::number(mailIndex));
+    mailsMarkedForDelete.append(mailIndex);
+    state = Pop3ClientState::Pop3SendedDeleteRequest;
+}
+
+void Pop3Client::reset()
+{
+    sendText("RSET");
+    state = Pop3ClientState::Pop3SendedResetRequest;
+}
+
 void Pop3Client::receiveText()
 {
     if(tcpSocket->bytesAvailable())
@@ -62,6 +75,7 @@ void Pop3Client::sendText(QString text)
 void Pop3Client::handleReceivedText(QString receivedText)
 {
     QString responseStatus = receivedText.split(" ").at(0);
+    Pop3ClientMail mail;
     if(responseStatus == "+OK")
     {
         switch(state)
@@ -74,23 +88,30 @@ void Pop3Client::handleReceivedText(QString receivedText)
                 sendText("PASS " + password);
                 state = Pop3ClientState::Pop3SendedPassword;
                 break;
-           case Pop3ClientState::Pop3SendedPassword:
+            case Pop3ClientState::Pop3SendedPassword:
                 state = Pop3ClientState::Pop3VerifiedAtServer;
                 emit verifiedSuccessfully();
                 break;
-           case Pop3ClientState::Pop3SendedStatCommand:
+            case Pop3ClientState::Pop3SendedStatCommand:
                 numberOfAllMails = receivedText.split(" ").at(1).toInt();
                 receivedMails.clear();
                 currentMailIndex = 0;
                 state = Pop3ClientState::Pop3WaitingForMails;
                 getNextMail();
                 break;
-           case Pop3ClientState::Pop3WaitingForMails:
-                Pop3ClientMail mail = createPop3ClientMail(receivedText.section("\n", 1));
-                qDebug() << mail.sender;
-                qDebug() << mail.body;
+            case Pop3ClientState::Pop3WaitingForMails:
+                mail = createPop3ClientMail(receivedText.section("\n", 1));
                 receivedMails.append(mail);
                 getNextMail();
+                break;
+            case Pop3ClientState::Pop3SendedDeleteRequest:
+                state = Pop3ClientState::Pop3VerifiedAtServer;
+                getAllMails();
+                break;
+            case Pop3ClientState::Pop3SendedResetRequest:
+                mailsMarkedForDelete.clear();
+                state = Pop3ClientState::Pop3VerifiedAtServer;
+                getAllMails();
                 break;
         }
     }
@@ -135,5 +156,9 @@ Pop3ClientMail Pop3Client::createPop3ClientMail(QString content)
     }
     mail.body = content.section("\n\r\n", 1);
     mail.body.chop(2);
+    if(mailsMarkedForDelete.contains(currentMailIndex))
+    {
+        mail.marktForDelete = true;
+    }
     return mail;
 }

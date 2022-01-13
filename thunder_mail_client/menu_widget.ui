@@ -18,7 +18,7 @@
     <rect>
      <x>200</x>
      <y>30</y>
-     <width>111</width>
+     <width>141</width>
      <height>21</height>
     </rect>
    </property>
@@ -78,6 +78,11 @@
       <column>
        <property name="text">
         <string>Datum , Uhrzeit</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Wird gelöscht</string>
        </property>
       </column>
      </widget>
@@ -147,6 +152,32 @@
      <widget class="QPlainTextEdit" name="bodyTextEdit"/>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="deleteMailPushButton">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>360</y>
+     <width>91</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Mail Löschen</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="resetPushButton">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>390</y>
+     <width>91</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Zurücksetzen</string>
+   </property>
   </widget>
  </widget>
  <resources/>

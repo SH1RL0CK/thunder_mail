@@ -11,6 +11,7 @@ struct Pop3ClientMail
     QString dateTime;
     QString subject;
     QString body;
+    bool marktForDelete = false;
 };
 
 /**
@@ -25,9 +26,10 @@ enum Pop3ClientState
     Pop3VerifiedAtServer,
     Pop3SendedStatCommand,
     Pop3WaitingForMails,
-    Pop3SendedQuitRequest,
+    Pop3SendedDeleteRequest,
     Pop3SendedNoOperationCommand,
     Pop3SendedResetRequest,
+    Pop3SendedQuitRequest,
 };
 
 class Pop3Client : public QObject
@@ -38,6 +40,7 @@ public:
 
     Pop3ClientState getState();
     QString getUsername();
+    QList<Pop3ClientMail> getReceivedMails();
     /**
      * @brief Der POP3-Client verbindet sich mit dem POP3-Server
      * @param ipAdress Die IP-Adresse des POP3-Servers
@@ -47,7 +50,9 @@ public:
 
     void getAllMails();
 
-    QList<Pop3ClientMail> getReceivedMails();
+    void deleteMail(int mailIndex);
+
+    void reset();
 
 signals:
     /**
@@ -83,6 +88,8 @@ private:
     int numberOfAllMails;
 
     int currentMailIndex;
+
+    QList<int> mailsMarkedForDelete;
 
     QList<Pop3ClientMail> receivedMails;
     /**

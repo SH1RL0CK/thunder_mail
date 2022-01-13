@@ -33,11 +33,15 @@ private slots:
 
     void on_mailsTableWidget_cellClicked(int row, int column);
 
+    void on_deleteMailPushButton_clicked();
+
+    void on_resetPushButton_clicked();
+
 private:
     Ui::MenuWidget *ui;
-
     Pop3Client *pop3Client;
     SmtpClient *smtpClient;
+    int selectedMailIndex;
 
     void showMail(int mailIndex);
 };

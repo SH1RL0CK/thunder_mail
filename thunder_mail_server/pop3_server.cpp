@@ -111,7 +111,7 @@ void Pop3Server::receiveAndHandleText()
             else if(receivedText == "RSET")
             {
                 currentClient->mailsToBeDeleted.clear();
-                response + "+OK everything reseted";
+                response = "+OK everything reseted";
             }
             else if(receivedText == "QUIT")
             {

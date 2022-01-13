@@ -41,7 +41,9 @@ void MenuWidget::receivedAllMails()
         ui->mailsTableWidget->setItem(i, 2, new QTableWidgetItem(mails.at(i).dateTime));
         ui->mailsTableWidget->setItem(i, 3, new QTableWidgetItem(mails.at(i).marktForDelete ? "Ja" : "Nein"));
     }
-    showMail(0);
+    ui->mailsTableWidget->scrollToBottom();
+    if(mails.size() > 0)
+        showMail(mails.size() - 1);
 }
 
 void MenuWidget::quittedServer()
@@ -78,7 +80,6 @@ void MenuWidget::closeEvent(QCloseEvent *event)
 {
     if(pop3Client->getState() == Pop3ClientState::Pop3NotConnected && smtpClient->getState() == SmtpClientState::SmtpNotConnected)
     {
-
         event->accept();
     }
     else

@@ -50,7 +50,7 @@ private:
 
     void showMail(int mailIndex);
 
-    void closeEvent(QCloseEvent *bar);
+    void closeEvent(QCloseEvent *event);
 
 };
 #endif // MENUWIDGET_H

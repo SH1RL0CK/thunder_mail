@@ -35,6 +35,7 @@ private slots:
     void sendingMailFailed();
 
 
+
 private:
     Ui::SendingMailWidget *ui;
     /**

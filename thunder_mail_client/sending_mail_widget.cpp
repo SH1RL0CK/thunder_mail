@@ -16,7 +16,6 @@ SendingMailWidget::SendingMailWidget(SmtpClient *_smtpClient, QString sender, QW
 
 SendingMailWidget::~SendingMailWidget()
 {
-    smtpClient->disconnect();
     delete ui;
 }
 
@@ -42,6 +41,8 @@ void SendingMailWidget::sendingMailWasSuccessful()
 {
     showFeedbackOutput("Die Mail wurde erfolgreich versand!", "green");
     QMessageBox::information(this, "Erfolgreich!", "Die Mail wurde erfolgreich versendet!");
+    this->close();
+    smtpClient->disconnect();
 }
 
 void SendingMailWidget::sendingMailFailed()

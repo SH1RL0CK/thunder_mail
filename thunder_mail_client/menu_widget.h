@@ -2,6 +2,7 @@
 #define MENUWIDGET_H
 
 #include <QWidget>
+#include <QCloseEvent>
 
 #include "pop3_client.h"
 #include "smtp_client.h"
@@ -37,6 +38,7 @@ private slots:
 
     void on_resetPushButton_clicked();
 
+
 private:
     Ui::MenuWidget *ui;
     Pop3Client *pop3Client;
@@ -44,5 +46,7 @@ private:
     int selectedMailIndex;
 
     void showMail(int mailIndex);
+
+    void closeEvent(QCloseEvent *bar);
 };
 #endif // MENUWIDGET_H

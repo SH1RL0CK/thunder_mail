@@ -122,8 +122,10 @@ void Pop3Server::receiveAndHandleText()
                     databaseManager->delteteMail(currentClient->userId, currentClient->mailsToBeDeleted.at(i).mailId);
                 }
                 sendText(currentClient, "+OK bye");
-                delete currentClient;
+                currentClient->tcpSocket->disconnectFromHost();
                 clientsIterator.remove();
+                emit connectEvent(currentClient->username + " hat die Verbindung getrennt.", clients.size());
+                delete currentClient;
                 continue;
             }
         }

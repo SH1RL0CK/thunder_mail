@@ -121,8 +121,10 @@ void SmtpServer::receiveAndHandleText()
         else if(receivedText == "QUIT")
         {
             sendText(currentClient, "221 Closing channel");
-            delete currentClient;
+            currentClient->tcpSocket->disconnectFromHost();
             clientsIterator.remove();
+            emit connectEvent(currentClient->name + " hat die Verbindung getrennt.", clients.size());
+            delete currentClient;
             continue;
         }
         // Der Befehl wurde nicht gefunden.

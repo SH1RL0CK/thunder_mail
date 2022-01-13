@@ -54,6 +54,10 @@ public:
 
     void reset();
 
+    void sendNoOperationCommand();
+
+    void quit();
+
 signals:
     /**
      * @brief Der Client hat sich erfolgreich am Server verifiziert

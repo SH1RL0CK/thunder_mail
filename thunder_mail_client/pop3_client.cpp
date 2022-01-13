@@ -53,6 +53,18 @@ void Pop3Client::reset()
     state = Pop3ClientState::Pop3SendedResetRequest;
 }
 
+void Pop3Client::sendNoOperationCommand()
+{
+    sendText("NOOP");
+    state = Pop3ClientState::Pop3SendedNoOperationCommand;
+}
+
+void Pop3Client::quit()
+{
+    sendText("QUIT");
+    state = Pop3ClientState::Pop3SendedQuitRequest;
+}
+
 void Pop3Client::receiveText()
 {
     if(tcpSocket->bytesAvailable())
@@ -113,6 +125,12 @@ void Pop3Client::handleReceivedText(QString receivedText)
                 state = Pop3ClientState::Pop3VerifiedAtServer;
                 getAllMails();
                 break;
+            case Pop3ClientState::Pop3SendedQuitRequest:
+                tcpSocket->disconnectFromHost();
+                state = Pop3ClientState::Pop3NotConnected;
+                break;
+            case Pop3ClientState::Pop3SendedNoOperationCommand:
+                state = Pop3ClientState::Pop3VerifiedAtServer;
         }
     }
 }

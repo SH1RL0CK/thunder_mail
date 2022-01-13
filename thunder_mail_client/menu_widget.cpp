@@ -64,9 +64,19 @@ void MenuWidget::showMail(int mailIndex)
     ui->mailContentLabel->setText("Inhalt (Mail " + QString::number(mailIndex + 1) + "):");
 }
 
+void MenuWidget::closeEvent(QCloseEvent *bar)
+{
+    pop3Client->quit();
+    smtpClient->sendQuitRequest();
+    bar->accept();
+}
+
+
 void MenuWidget::on_deleteMailPushButton_clicked()
 {
-    pop3Client->deleteMail(selectedMailIndex + 1);
+    //pop3Client->deleteMail(selectedMailIndex + 1);
+    pop3Client->quit();
+    smtpClient->sendQuitRequest();
 }
 
 void MenuWidget::on_resetPushButton_clicked()

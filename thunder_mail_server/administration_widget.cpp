@@ -25,10 +25,12 @@ AdministrationWidget::~AdministrationWidget()
 
 void AdministrationWidget::on_startServerPushButton_clicked()
 {
+    ui->startErrorLabel->setText("");
     int pop3Port = ui->pop3PortSpinBox->value();
     int smtpPort = ui->smtpPortSpinBox->value();
     if(pop3Port == smtpPort)
     {
+        ui->startErrorLabel->setText("Die beiden Ports dürfen nicht gleich sein!");
         return;
     }
     pop3Server->startServer(pop3Port);

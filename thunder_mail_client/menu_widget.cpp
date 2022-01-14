@@ -98,7 +98,8 @@ void MenuWidget::closeEvent(QCloseEvent *event)
 
 void MenuWidget::on_deleteMailPushButton_clicked()
 {
-    pop3Client->deleteMail(selectedMailIndex + 1);
+    if(selectedMailIndex != -1)
+        pop3Client->deleteMail(selectedMailIndex + 1);
 }
 
 void MenuWidget::on_resetPushButton_clicked()

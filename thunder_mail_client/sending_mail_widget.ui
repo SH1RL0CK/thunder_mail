@@ -83,6 +83,9 @@
         <property name="toolTip">
          <string>Hinweis: Mehrere Empfänger mit &quot;,&quot; trennen z.B. alice@thunder-mail.de,bob@thunder-mail.de,...</string>
         </property>
+        <property name="text">
+         <string>bob@thunder-mail.de,philipp@thunder-mail.de</string>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">

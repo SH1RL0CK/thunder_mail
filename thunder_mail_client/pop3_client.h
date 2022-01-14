@@ -54,7 +54,6 @@ public:
      * @brief Leitet das Holen der Mails vom Server ein
      */
     void getAllMails();
-
     /**
      * @brief Makiert eine Mail zum Löschen
      * @param mailIndex Der Index der Mail

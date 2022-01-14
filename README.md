@@ -4,7 +4,8 @@
 Für den ITEC-Unterricht sollen wir als Projekt einen SMTP-Client und Server, sowie einen POP3-Server und Client implementieren.
 
 ## Der Server
-Der Thunder Mail Server verfügt über einen POP3- und SMTP-Server, welche auf unterschiedlichen Ports laufen. Alle Benutzer und gesendeten Mails werden in einer SQLite-Datenbank gespeichert, sie sind also auch nach Beenden des Programmes verfügbar. **In der Datenbank habe ich 3 Benutzer abgelegt: alice@thunder-mail.de, bob@thunder-mail.de und philipp@thunder-mail.de. Das Passwort für alle drei lautet: "password".** 
+Der Thunder Mail Server verfügt über einen POP3- und SMTP-Server, welche auf unterschiedlichen Ports laufen. Alle Benutzer und gesendeten Mails werden in einer SQLite-Datenbank gespeichert, sie sind also auch nach Beenden des Programmes verfügbar. **In der Datenbank habe ich 3 Benutzer abgelegt: alice@thunder-mail.de, bob@thunder-mail.de und philipp@thunder-mail.de. Das Passwort für alle drei lautet: "password".**
+
 ![Screenshot vom Serverfenster](assets/screenshots/administration_widget_screenshot.png)
 
 ## Der Client

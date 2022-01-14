@@ -9,14 +9,24 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    login_widget.cpp \
     main.cpp \
-    menu_widget.cpp
+    menu_widget.cpp \
+    pop3_client.cpp \
+    sending_mail_widget.cpp \
+    smtp_client.cpp
 
 HEADERS += \
-    menu_widget.h
+    login_widget.h \
+    menu_widget.h \
+    pop3_client.h \
+    sending_mail_widget.h \
+    smtp_client.h
 
 FORMS += \
-    menu_widget.ui
+    login_widget.ui \
+    menu_widget.ui \
+    sending_mail_widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

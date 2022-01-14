@@ -9,11 +9,17 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    database_manager.cpp \
     main.cpp \
-    administration_widget.cpp
+    administration_widget.cpp \
+    pop3_server.cpp \
+    smtp_server.cpp
 
 HEADERS += \
-    administration_widget.h
+    administration_widget.h \
+    database_manager.h \
+    pop3_server.h \
+    smtp_server.h
 
 FORMS += \
     administration_widget.ui

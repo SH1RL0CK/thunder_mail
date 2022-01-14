@@ -12,14 +12,17 @@ Der Thunder Mail Client verfügt über drei Fenster:
 
 ### Das Anmeldefenster
 Der Benutzer gibt hier die Adresse des Thunder Mail Server und die Ports für POP3 und SMTP. Außerdem gibt er Benutzername (alice@thunder-mail.de, bob@thunder-mail.de oder philipp@thunder-mail.de) und Passwort (password) an.
+
 ![Screenshot vom Administration Widget](assets/screenshots/login_widget_screenshot.png)
 
 ### Das Menüfenster
 Hier kann der Benutzer alle Mails empfangen und sich den Inhalt einer Mail anzeigen (durch das Klicken auf die entsprechende Zeile in der Tabelle). Die aktuell ausgewählte Mail kann außerdem zum Löschen markiert werden. Beim Schließen des Fensters wird die Verbindung zum POP3-Server beendet und die Löschungen werden ausgeführt. Die Markierungen zum Löschen können aber auch zurückgesetzt werden.
+
 ![Screenshot vom Menüfenster](assets/screenshots/menu_widget_screenshot.png)
 
 ### Das "Neue Mail verfassen"-Fenster
 Hier kann der Benutzer eine neue Mail verfassen und sie abschicken.
+
 ![Screenshot vom "Neue Mail verfassen"-Fenster](assets/screenshots/sending_mail_widget_screenshot.png)
 
 **Planung des Projekts:**
